@@ -11,4 +11,4 @@ Requirements
 Build
 --------
 
-multimarkdown oslo-mapping-spec-draft.txt --process-html -o oslo-mapping-spec.html
+multimarkdown oslo-mapping-spec-draft.md --process-html -o oslo-mapping-spec.html
