@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>OSLO - Richtlijnen voor het Mappen van data</title>
+	<meta name="template" content="MultiMarkdown"/>
+</head>
+<body>
+
+<section id='abstract'>
+</section>
+
+<p>Released under the <a href="https://joinup.ec.europa.eu/category/licence/isa-open-metadata-licence-v11">ISA Open Metadata v1.1</a> license.</p>
+<section>
+
+<h1 id="inleiding">Inleiding</h1>
+
+<p>Dit document beschrijft de mapping van het OSLO conceptueel model naar RDF en XML</p>
+</section>
+<section>
+
+<h1 id="uristrategie">URI Strategie</h1>
+
+<p>De belangrijkste motivatie om te kiezen voor een URI-strategie is dat toepassingen en catalogi op een eenduidige manier kunnen verwijzen naar services die bestaan bij de verschillende overheden en gebruikers. Dit zal het hergebruik van de services maximaliseren en de impact bij wijzigingen voor implementaties minimaliseren. Dat kan aangezien alle dergelijke services op dezelfde manier hun resources toegankelijk maken.</p>
+
+<p>Het basispatroon dat deze strategie vervult is (in lijn met http://www.opendataforum.info/Docs/URI_strategie_versie2):</p>
+
+<pre><code>http://{domein}/{type}/{concept}/{referentie}
+</code></pre>
+<section>
+
+<h2 id="domein">Domein</h2>
+
+<p>Het domein bestaat uit het internet-domein en een pad. Het is best zo dat het domein van de URI een referentie bevat naar de bron waar het vandaan komt. </p>
+
+<p>Om het domein herkenbaar te houden voor ontwikkelaars en gebruikers, is het belangrijk om een generiek domein te voorzien in het belang van verschillende diensten die gecentraliseerd zijn rond een bepaald domein of sector.</p>
+
+<p>Bvb. {service}.data.localgov.be/ of data.localgov.be/{service}/ maar dit kan eventueel uitgebreid worden naar {eigendomein}/{eigenpad}/{service} of {service}.{eigendomein}/{eigenpad}.</p>
+</section>
+<section>
+
+<h2 id="type">Type</h2>
+
+<p>Het type duidt op het soort service waarop aanspraak gemaakt wordt en dit heeft impact op hoe de referentie kan gebruikt worden.</p>
+
+<p>Er zijn 2 types die minimaal dienen ondersteunt te worden:</p>
+
+<ul>
+<li>id: de referentie verwijst naar een concrete instantie van het concept</li>
+<li>lijst: een referentie is niet nodig, de lijst van concepten of van types concepten (indien geen concept wordt opgegeven) in het domein wordt weergegeven.</li>
+</ul>
+
+<p>Op een lijst kunnen geavanceerdere operaties uitgevoerd worden zoals een custom filter dat kan toegepast worden een bepaald type concept of op het gehele domein of zoeken op tekstwaarde van een bepaald veld in het domein (al dan niet beperkt binnen een bepaald concept). Deze actie wordt meegegeven in de request (bvb. via de url parameters).</p>
+
+<p>Daarnaast zijn er ook nog andere types mogelijk zoals een concretisatie van id (rijksregisternummer &#8220;rrk&#8221; of ondernemingsnummer &#8220;kbo&#8221;.</p>
+</section>
+<section>
+
+<h2 id="concept">Concept</h2>
+
+<p>Het type duidt aan wat voor soort identiteit het gaat waarnaar verwezen wordt met de identifier. In het bijzonder zijn hier de geldige concepten (met Nederlandstalige terminologie):</p>
+
+<ul>
+<li>Basisconcepten
+
+<ul>
+<li>persoon en persoonsrelatie</li>
+<li>organisatie en organisatierelatie</li>
+<li>hoedanigheid</li>
+<li>contactinformatie</li>
+<li>locatie (omvat ook verblijfsobjecten)</li>
+<li>adres</li>
+<li>dienstverlening</li>
+<li>product</li>
+</ul></li>
+<li>Uitgebreide concepten
+
+<ul>
+<li>kanaal</li>
+<li>beleidsveld</li>
+<li>bezigheid</li>
+<li>openingsuren</li>
+</ul></li>
+</ul>
+</section>
+<section>
+
+<h2 id="resources">Resources</h2>
+
+<p>Om all attributen en relaties van een specifiek concept te krijgen, gekenmerkt aan de hand van zijn identifier gebruiken we volgende uri:</p>
+
+<pre><code>http://{domein}/id/{concept}/{referentie}
+</code></pre>
+
+<p>Het resultaat van deze vraag is een document beschreven volgens OSLO (RDF of OSLO-XML) dat de beoogde instantie van het concept beschrijft, of derefereert.</p>
+
+<p>Voorbeeld:</p>
+
+<p>Het bevragen van een resource, een ‘READ’ operatie, vertaalt zich bij een REST Service naar een GET request.</p>
+
+<pre><code>http://example.com/id/organisatie
+</code></pre>
+
+<p>Vaak zal in de praktijk een resource gekenmerkt worden door een specifiek type &#8216;id&#8217; zoals bijvoorbeeld KBO-nummer. Dit is zeker het geval indien meerdere mogelijkheden tot mapping zijn:</p>
+
+<pre><code>http://example.com/kbo/organisatie
+</code></pre>
+</section>
+</section>
+<section>
+
+<h1 id="namespaces">Namespaces</h1>
+
+<p>De namespace of the OSLO vocabulary is:</p>
+
+<pre><code>http://purl.org/oslo/ns/ 
+http://purl.org/oslo/ns/vocabulary (XML Schema)
+</code></pre>
+<section>
+
+<h2 id="xml">XML</h2>
+
+<p>Aan de basis ligt een Identificatie klasse, die is gebaseerd op de gelijknamige UN/CEFACT klasse [UN/CEFACT] en is gedefinieerd in de ADMS namespace [ADMS]. In de de OSLO XML specificatie worden componenten uit de Core Vocabularies XML hergebruikt. Het idee hierachter is dat de OSLO XML specificatie zo maximaal gealigneerd is op de Core Vocabularies XML. Aan de basis van de Core Vocabularies XML is een bibliotheek van veelgebruikte informatie elementen die voorzien is door de “Universal Bussiness Language” bibliotheek (UBL) [OASIS]. Met dit design zorgt de Core Vocabularies voor optimale herbruikbaarheid van elementen gedefinieerd door de “Core Component Technical Specification” [CCTS] van UN/CEFACT (de basis van UBL).
+Voor de contactinformatie te modelleren wordt gebruik gemaakt van VCard componenten zoals gespecifieerd in [RFC6350] door het IETF. Uit de beschikbare componenten werd een subset geselecteerd die gealinieerd is met het OSLO Conceptueel model.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Namespace</th>
+	<th style="text-align:left;">: Prefix:</th>
+	<th style="text-align:left;">Beheer:</th>
+	<th style="text-align:left;">Domein</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2</td>
+	<td style="text-align:left;">udt</td>
+	<td style="text-align:left;"><a href="http://www.unece.org/cefact.html">UN/CEFACT</a></td>
+	<td style="text-align:left;">Datatypes</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/corevocabulary/</td>
+	<td style="text-align:left;">cvb</td>
+	<td style="text-align:left;"><a href="http://joinup.ec.europa.eu/asset/core_business/asset_release/core-business-vocabulary-100">ISA</a></td>
+	<td style="text-align:left;">Basis componenten</td>
+</tr>
+<tr>
+	<td style="text-align:left;">BasicComponents</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/corevocabulary</td>
+	<td style="text-align:left;">cva</td>
+	<td style="text-align:left;">ISA</td>
+	<td style="text-align:left;">Geaggregeerde componenten</td>
+</tr>
+<tr>
+	<td style="text-align:left;">/AggregateComponents</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">urn:oslo:names:specification:schema:xsd:CommonBasicComponents&#8211;1</td>
+	<td style="text-align:left;">ovc</td>
+	<td style="text-align:left;">OSLO</td>
+	<td style="text-align:left;">OSLO Basis componenten</td>
+</tr>
+<tr>
+	<td style="text-align:left;">urn:oslo:names:specification:schema:xsd:AggregateComponents&#8211;1</td>
+	<td style="text-align:left;">ova</td>
+	<td style="text-align:left;">OSLO</td>
+	<td style="text-align:left;">OSLO Geaggregeerde</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">componenten</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><a href="http://docs.oasis-open.org/ubl/UBL-2.1.pdf">OASIS</a> Universal Business Language v2.1.</li>
+<li><a href="http://www.unece.org/fileadmin/DAM/cefact/codesfortrade/CCTS/CCTS-Version3.pdf">CCTS</a> United Nations Centre for Trade Facilitation and Electronic Business. Core Components Technical Specification Version 3.0</li>
+<li><a href="http://www.unece.org/cefact/">UN/CEFACT</a> UN Centre for Trade Facilitation and e-Business</li>
+<li><a href="http://joinup.ec.europa.eu/asset/adms/description">ADMS</a> The Asset Description Metadata Standard,</li>
+<li><a href="http://tools.ietf.org/html/rfc6350">RFC6350</a></li>
+</ul>
+</section>
+<section>
+
+<h2 id="rdf">RDF</h2>
+
+<p>Het RDF schema maak optimaal gebruik van bestaande schema’s en vocabularies. Dit is belangrijk zodat toepassingen en andere afgeleide schema’s zo makkelijk gelinkt kunnen worden aan het OSLO RDF-schema zonder dat daarvoor eerst complexe mappings gemaakt moeten worden tussen vocabularies voor courant gebruikte object, types en kenmerken in de beschrijving van de uitgewisselde gegevens. Bovendien garandeert hergebruik van bestaande schema’s compatibiliteit en herkenbaarheid op langere termijn van het OSLO RDF-schema. Een bijkomend voordeel is dat de set eigen definities in het OSLO RDF-schema beperkt blijft zodat deze makkelijk te ondersteunen blijft.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Namespace</th>
+	<th style="text-align:left;">: Prefix:</th>
+	<th style="text-align:left;">Beheer:</th>
+	<th style="text-align:left;">Domein</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/org</td>
+	<td style="text-align:left;">org</td>
+	<td style="text-align:left;"><a href="http://www.w3.org/2011/gld/wiki/Main_Page">W3C GLD</a></td>
+	<td style="text-align:left;">Organisaties</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/regorg</td>
+	<td style="text-align:left;">rov</td>
+	<td style="text-align:left;">W3C GLD</td>
+	<td style="text-align:left;">Geregistreerde</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Organisaties</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/person</td>
+	<td style="text-align:left;">person</td>
+	<td style="text-align:left;"><a href="http://joinup.ec.europa.eu/asset/core_person/description">ISA</a></td>
+	<td style="text-align:left;">Personen</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/locn</td>
+	<td style="text-align:left;">locn</td>
+	<td style="text-align:left;">ISA(http://joinup.ec.europa.eu/asset/core_location/home)</td>
+	<td style="text-align:left;">Locaties</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://purl.org/vocab/cpsv</td>
+	<td style="text-align:left;">cpsv</td>
+	<td style="text-align:left;"><a href="http://joinup.ec.europa.eu/asset/core_public_service/home">ISA</a></td>
+	<td style="text-align:left;">Publieke dienstverlening</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://purl.org/dc/terms/</td>
+	<td style="text-align:left;">dcterms</td>
+	<td style="text-align:left;"><a href="http://dublincore.org/about/organization/">DCMA</a></td>
+	<td style="text-align:left;">Metadata</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://schema.org/</td>
+	<td style="text-align:left;">schema</td>
+	<td style="text-align:left;">]schema.org](http://schema.org/docs/schemas.html)</td>
+	<td style="text-align:left;">Markup, Metadata</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/2006/vcard/ns</td>
+	<td style="text-align:left;">vcard</td>
+	<td style="text-align:left;">W3C</td>
+	<td style="text-align:left;">Contactgegevens</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/adms</td>
+	<td style="text-align:left;">adms</td>
+	<td style="text-align:left;"><a href="https://dvcs.w3.org/hg/gld/raw-file/default/adms/index.html">WRC GLD</a></td>
+	<td style="text-align:left;">Standaarden, Codelijsten</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">en Taxonomien</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/2006/time</td>
+	<td style="text-align:left;">time</td>
+	<td style="text-align:left;"><a href="http://www.w3.org/TR/owl-time/">W3C</a></td>
+	<td style="text-align:left;">Tijdsaanduiding</td>
+</tr>
+<tr>
+	<td style="text-align:left;">http://www.w3.org/ns/prov</td>
+	<td style="text-align:left;">prov</td>
+	<td style="text-align:left;"><a href="http://www.w3.org/TR/prov-o/">W3C</a></td>
+	<td style="text-align:left;">Herkomst</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="voorbeeld">Voorbeeld</h2>
+
+<p>Eenzelfde persoon kan volgens RDF en het OSLO XML Schema worden uitgewisseld.</p>
+
+<p>Indien een dienstverlener de persoonsgegevens ter beschikking wil stellen dan kan dit bijvoorbeeld via een url:</p>
+
+<p>GET http://dienstverlener.be/oslo/personen/123456789</p>
+
+<p>Afhankelijk van de context van de gebruiker en de toepassing zal het opvragen van deze url de gegevens van de persoon teruggeven in RDF of geformatteerd volgens het OSLO XML Schema.</p>
+
+<p>Het antwoord in RDF/XML:</p>
+
+<pre><code>&lt;rdf:RDF 
+    xmlns:person=&quot;http://www.w3.org/ns/person#&quot;
+    xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
+    &lt;person:Person rdf:nodeID=&quot;123456789&quot;&gt;
+    &lt;person:familyName&gt;Brickley&lt;/person:familyName&gt;
+    &lt;person:givenName&gt;Dan&lt;/person:familyName&gt;
+    &lt;!-- etc... --&gt;
+    &lt;/person:Person&gt;
+&lt;/rdf:RDF&gt;
+</code></pre>
+
+<p>Hetzelfde antwoord in OSLO XML:</p>
+
+<pre><code>&lt;operson:person
+        xmlns:xsi=”http://www.w3.org/2001/XMLSchema-instance”
+        xmlns:operson=&quot;http://oslo.v-ict-or.be/vocabulary/person&quot;
+        xmlns:cva=&quot;http://www.w3.org/ns/corevocabulary/AggregateComponents&quot;
+        xmlns:cvb=&quot;http://www.w3.org/ns/corevocabulary/BasicComponents&quot;
+        xmlns:cbc=&quot;urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2&quot;&gt;
+    &lt;cbc:FamilyName&gt;Brickley&lt;/cbc:FamilyName&gt;
+    &lt;cvb:GivenName&gt;Dan&lt;/cvb:GivenName&gt;
+    &lt;!-- etc... --&gt;
+&lt;/operson:person&gt;   
+</code></pre>
+</section>
+</section>
+<section>
+
+<h1 id="entiteiten">Entiteiten</h1>
+<section>
+
+<h2 id="basiscomponenten">Basiscomponenten</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Persoon</td>
+	<td style="text-align:left;">person</td>
+	<td style="text-align:left;">person:Person</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvpersonType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;">organization</td>
+	<td style="text-align:left;">oslo:Organization</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvorganizationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Hoedanigheid</td>
+	<td style="text-align:left;">membership</td>
+	<td style="text-align:left;">oslo:Membership</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvmembershipType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Persoonsrelatie</td>
+	<td style="text-align:left;">PersonRelation</td>
+	<td style="text-align:left;">oslo:PersonRelation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(PersonRelationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Organisatierelatie</td>
+	<td style="text-align:left;">OrganizationRelation</td>
+	<td style="text-align:left;">oslo:OrganizationRelation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OrganizationRelationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Agent</td>
+	<td style="text-align:left;">(abstract)</td>
+	<td style="text-align:left;">dcterms:Agent</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">OvAgentType</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Locatie</td>
+	<td style="text-align:left;">Location</td>
+	<td style="text-align:left;">locn:Location</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(CvLocationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Verblijfsobject</td>
+	<td style="text-align:left;">ResidenceObject</td>
+	<td style="text-align:left;">oslo:ResidenceObject</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Gebouw</td>
+	<td style="text-align:left;">building</td>
+	<td style="text-align:left;">oslo:Building</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OsloBuildingType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Perceel</td>
+	<td style="text-align:left;">parcel</td>
+	<td style="text-align:left;">oslo:Parcel</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OsloParcelType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Basis Adres</td>
+	<td style="text-align:left;">address</td>
+	<td style="text-align:left;">oslo:BaseAddress</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OsloBaseAddressType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Dienstverlening</td>
+	<td style="text-align:left;">PublicService</td>
+	<td style="text-align:left;">cpsv:PublicService</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvPublicServiceType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Initiatie</td>
+	<td style="text-align:left;">input</td>
+	<td style="text-align:left;">cpsv:Input</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvDocumentType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Product</td>
+	<td style="text-align:left;">output</td>
+	<td style="text-align:left;">cpsv:output</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvProductType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Kanaal</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">oslo:Channel</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Bezigheid</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">oslo:Activity</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Beleidsthema</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">oslo:PolicyTheme</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Product</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">oslo:Product</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Openingsuren</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">TBD</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="secundairecomponenten">Secundaire componenten</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;">identifier</td>
+	<td style="text-align:left;">adms:identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">(voor alle objecten)</td>
+	<td style="text-align:left;">(OvidentifierType)</td>
+	<td style="text-align:left;">(adms:Identifier)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;">code</td>
+	<td style="text-align:left;">oslo:Code</td>
+</tr>
+<tr>
+	<td style="text-align:left;">(alle types)</td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Herkomst</td>
+	<td style="text-align:left;">provenance</td>
+	<td style="text-align:left;">prov:entity (prov:Entity)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvprovenanceType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Contact</td>
+	<td style="text-align:left;">contact</td>
+	<td style="text-align:left;">oslo:contact</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcontactType)</td>
+	<td style="text-align:left;">(vcard:VCard)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geometrie</td>
+	<td style="text-align:left;">geometry</td>
+	<td style="text-align:left;">locn:geometry</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(cvb:GeometryType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Uitgebreid</td>
+	<td style="text-align:left;">extendedAddress</td>
+	<td style="text-align:left;">oslo:ExtendedAddress</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Adres (bij Basis Adres)</td>
+	<td style="text-align:left;">(OsloAddressType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Rol</td>
+	<td style="text-align:left;">Role</td>
+	<td style="text-align:left;">oslo:Role</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvRoleType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Juridisch</td>
+	<td style="text-align:left;">Rule</td>
+	<td style="text-align:left;">cpsv:Rule</td>
+</tr>
+<tr>
+	<td style="text-align:left;">kader</td>
+	<td style="text-align:left;">(OvRuleType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Status</td>
+	<td style="text-align:left;">Status</td>
+	<td style="text-align:left;">oslo:Status</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Machtiging</td>
+	<td style="text-align:left;">permission</td>
+	<td style="text-align:left;">oslo:Permission</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvPermissionType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+
+<h1 id="metadata">Metadata</h1>
+<section>
+
+<h2 id="identifier">Identifier</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Sleutel</td>
+	<td style="text-align:left;">cvb:Identifier</td>
+	<td style="text-align:left;">dcterms:identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">cvb:IdentifierType</td>
+	<td style="text-align:left;">dcterms:type</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Bron</td>
+	<td style="text-align:left;">cvb:IssuingAuthority,</td>
+	<td style="text-align:left;">adms:schemeAgency</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">cvb:IssuingAuthorityID</td>
+	<td style="text-align:left;">dcterms:publisher</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Wijzigingsdatum</td>
+	<td style="text-align:left;">cbc:IssueDate</td>
+	<td style="text-align:left;">dcterms:issued</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Revisie</td>
+	<td style="text-align:left;">ovc:revisionOf</td>
+	<td style="text-align:left;">prov:wasRevisionOf</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Actief</td>
+	<td style="text-align:left;">ovc:isActive</td>
+	<td style="text-align:left;">oslo:isActive</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="codealltypes">Code (all types)</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;">ovc:code</td>
+	<td style="text-align:left;">dcterms:identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Label</td>
+	<td style="text-align:left;">ovc:Label</td>
+	<td style="text-align:left;">rdfs:label</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Omschrijving</td>
+	<td style="text-align:left;">cvb:Content</td>
+	<td style="text-align:left;">dcterms:description</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Lijst</td>
+	<td style="text-align:left;">cvb:List</td>
+	<td style="text-align:left;">dcterms:isPartOf</td>
+</tr>
+<tr>
+	<td style="text-align:left;">(Bron)</td>
+	<td style="text-align:left;">cvb:ListAgency</td>
+	<td style="text-align:left;">adms:schemeAgency</td>
+</tr>
+<tr>
+	<td style="text-align:left;">(Versie)</td>
+	<td style="text-align:left;">cvb:ListVersion</td>
+	<td style="text-align:left;">adms:version</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+
+<h1 id="contactinformatie">Contactinformatie</h1>
+<section>
+
+<h2 id="persoon">Persoon</h2>
+
+<p>TODO: Opsplitsen Naam volgens nieuwe wetgeving (eerste en tweede familienaam)</p>
+
+<p>TODO: Opsplitsen Rang</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Naam</td>
+	<td style="text-align:left;">cvb:FamilyName</td>
+	<td style="text-align:left;">person:familyName</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Voornaam</td>
+	<td style="text-align:left;">cvb:GivenName</td>
+	<td style="text-align:left;">person:givenName</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Andere</td>
+	<td style="text-align:left;">cvb:PatronomycName</td>
+	<td style="text-align:left;">person:patronymicName</td>
+</tr>
+<tr>
+	<td style="text-align:left;">voornamen</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geslacht</td>
+	<td style="text-align:left;">cvb:GenderCode</td>
+	<td style="text-align:left;">schema:gender</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Adellijke</td>
+	<td style="text-align:left;">oslo:nobelityTitle</td>
+	<td style="text-align:left;">oslo:nobelityTitle</td>
+</tr>
+<tr>
+	<td style="text-align:left;">titel</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">(Versie)</td>
+	<td style="text-align:left;">cvb:ListVersion</td>
+	<td style="text-align:left;">adms:version</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geboortedatum</td>
+	<td style="text-align:left;">cvb:BirthDate</td>
+	<td style="text-align:left;">schema:birthDate</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geboorteplaats</td>
+	<td style="text-align:left;">ovc:placeOfBirth</td>
+	<td style="text-align:left;">person:placeOfBirth</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Datum</td>
+	<td style="text-align:left;">cvb:DeathDate</td>
+	<td style="text-align:left;">schema:deathDate</td>
+</tr>
+<tr>
+	<td style="text-align:left;">overlijden</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Plaats overlijden</td>
+	<td style="text-align:left;">ovc:placeOfDeath</td>
+	<td style="text-align:left;">person:placeOfDeath</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Wettelijk</td>
+	<td style="text-align:left;">legalCohabetation</td>
+	<td style="text-align:left;">oslo:legalCohabetation</td>
+</tr>
+<tr>
+	<td style="text-align:left;">samenwonend</td>
+	<td style="text-align:left;">(ovc:IndicatorType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Burgerlijke</td>
+	<td style="text-align:left;">civilClass</td>
+	<td style="text-align:left;">oslo:civilClass</td>
+</tr>
+<tr>
+	<td style="text-align:left;">staat</td>
+	<td style="text-align:left;">(ovc:OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Juridische</td>
+	<td style="text-align:left;">legalIncompetence</td>
+	<td style="text-align:left;">oslo:legalIncompetence</td>
+</tr>
+<tr>
+	<td style="text-align:left;">onbewkwaamheid</td>
+	<td style="text-align:left;">(ovc:OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Is</td>
+	<td style="text-align:left;">domicile</td>
+	<td style="text-align:left;">oslo:domicile</td>
+</tr>
+<tr>
+	<td style="text-align:left;">gedomicilieerd op</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Verblijft</td>
+	<td style="text-align:left;">residence</td>
+	<td style="text-align:left;">oslo:residence</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="organisatie">Organisatie</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Maatschappelijke</td>
+	<td style="text-align:left;">cvb:LegalName</td>
+	<td style="text-align:left;">rov:legalName</td>
+</tr>
+<tr>
+	<td style="text-align:left;">naam</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Commerciële</td>
+	<td style="text-align:left;">cvb:AlternativeName</td>
+	<td style="text-align:left;">dcterms:alternative</td>
+</tr>
+<tr>
+	<td style="text-align:left;">naam</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Afgekorte naam</td>
+	<td style="text-align:left;">cvb:AlternativeName</td>
+	<td style="text-align:left;">dcterms:alternative</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">ovc:companyTypeOvbusinessCode</td>
+	<td style="text-align:left;">rov:orgType</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Vestiging</td>
+	<td style="text-align:left;">isBranch</td>
+	<td style="text-align:left;">oslo:isBranch</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:IndicatorType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Oprichtingsdatum</td>
+	<td style="text-align:left;">establishmentDate</td>
+	<td style="text-align:left;">oslo:establishmentDate</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:OsloDateType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Datum</td>
+	<td style="text-align:left;">shutdownDate</td>
+	<td style="text-align:left;">oslo:shutDownDate</td>
+</tr>
+<tr>
+	<td style="text-align:left;">stopzetting</td>
+	<td style="text-align:left;">(ovc:OsloDateType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO soort</td>
+	<td style="text-align:left;">kind</td>
+	<td style="text-align:left;">oslo:kind</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:IndicatorType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO rechtsvorm</td>
+	<td style="text-align:left;">ovc:legalFormCode</td>
+	<td style="text-align:left;">oslo:legalFormCode</td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO</td>
+	<td style="text-align:left;">ovc:legalStatusCode</td>
+	<td style="text-align:left;">rov:companyStatus</td>
+</tr>
+<tr>
+	<td style="text-align:left;">rechtstoestand</td>
+	<td style="text-align:left;">(ovc:legalStateEnumType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO reden</td>
+	<td style="text-align:left;">reasonShutdown</td>
+	<td style="text-align:left;">oslo:reasonShutDown</td>
+</tr>
+<tr>
+	<td style="text-align:left;">stopzetting</td>
+	<td style="text-align:left;">(ovc:ReasonShutDownEnumType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO</td>
+	<td style="text-align:left;">ovc:FunctionPhase</td>
+	<td style="text-align:left;">oslo:functionPhase</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Hoedanigheidsfase</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO</td>
+	<td style="text-align:left;">ovc:Function</td>
+	<td style="text-align:left;">oslo:function</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Hoedanigheid</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO Status</td>
+	<td style="text-align:left;">ovc:companyStatusOvbusinessCode</td>
+	<td style="text-align:left;">oslo:companyStatus</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">activiteit</td>
+	<td style="text-align:left;">companyActivityOvbusinessCode</td>
+	<td style="text-align:left;">rov:companyActivity</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">facturatielocatie</td>
+	<td style="text-align:left;">invoiceLocation</td>
+	<td style="text-align:left;">oslo:invoiceLocation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO nummer</td>
+	<td style="text-align:left;">KBONumber</td>
+	<td style="text-align:left;">rov:registration</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">KBO locatie</td>
+	<td style="text-align:left;">authenticLocation</td>
+	<td style="text-align:left;">oslo:authenticLocation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">leveringslocatie</td>
+	<td style="text-align:left;">deliveryLocation</td>
+	<td style="text-align:left;">oslo:deliveryLocation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">post locatie</td>
+	<td style="text-align:left;">mailingLocation</td>
+	<td style="text-align:left;">oslo:mailingLocation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="organisatierelatie">Organisatierelatie</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">behoort tot</td>
+	<td style="text-align:left;">from</td>
+	<td style="text-align:left;">oslo:fromOrganization</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvorganizationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">groepeert</td>
+	<td style="text-align:left;">to</td>
+	<td style="text-align:left;">oslo:toOrganization</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvorganizationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">geldigheid</td>
+	<td style="text-align:left;">ovc:validityPeriod</td>
+	<td style="text-align:left;">oslo:validityPeriod</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="hoedanigheid">Hoedanigheid</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">functie</td>
+	<td style="text-align:left;">ovc:membershipFunction</td>
+	<td style="text-align:left;">oslo:membershipFunction</td>
+</tr>
+<tr>
+	<td style="text-align:left;">geldigheidsperiode</td>
+	<td style="text-align:left;">ovc:validityPeriod</td>
+	<td style="text-align:left;">org:memberDuring</td>
+</tr>
+<tr>
+	<td style="text-align:left;">type</td>
+	<td style="text-align:left;">ovc:membershipType</td>
+	<td style="text-align:left;">oslo:membershipType</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">ontvangt post</td>
+	<td style="text-align:left;">mailingLocation</td>
+	<td style="text-align:left;">oslo:mailingLocation</td>
+</tr>
+<tr>
+	<td style="text-align:left;">op</td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">persoon</td>
+	<td style="text-align:left;">person</td>
+	<td style="text-align:left;">org:member</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvpersonType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">organisatie</td>
+	<td style="text-align:left;">organisation</td>
+	<td style="text-align:left;">org:organization</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvorganizationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">beschikbaar op</td>
+	<td style="text-align:left;">availableAt</td>
+	<td style="text-align:left;">oslo:availableAt</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvresidenceobjectType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+
+<h1 id="lokalisatie">Lokalisatie</h1>
+<section>
+
+<h2 id="verblijfsobject">Verblijfsobject</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">geldigheid</td>
+	<td style="text-align:left;">ovc:validityPeriod</td>
+	<td style="text-align:left;">oslo:validityPeriod</td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeft gebouw</td>
+	<td style="text-align:left;">ovc:parcel</td>
+	<td style="text-align:left;">oslo:parcel</td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeft perceel</td>
+	<td style="text-align:left;">ovc:building</td>
+	<td style="text-align:left;">oslo:building</td>
+</tr>
+<tr>
+	<td style="text-align:left;">adresseert</td>
+	<td style="text-align:left;">ovc:address</td>
+	<td style="text-align:left;">oslo:address</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="locatie">Locatie</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">geldigheidsperiode</td>
+	<td style="text-align:left;">ovc:validityPeriod</td>
+	<td style="text-align:left;">oslo:validityPeriod</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Heeft</td>
+	<td style="text-align:left;">geometry</td>
+	<td style="text-align:left;">locn:geometry</td>
+</tr>
+<tr>
+	<td style="text-align:left;">geometrie</td>
+	<td style="text-align:left;">(cvb:GeometryType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="adres">Adres</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">land</td>
+	<td style="text-align:left;">cvb:AdminunitFirstline</td>
+	<td style="text-align:left;">oslo:country</td>
+</tr>
+<tr>
+	<td style="text-align:left;">gemeente</td>
+	<td style="text-align:left;">cvb:PostName</td>
+	<td style="text-align:left;">locn:postName</td>
+</tr>
+<tr>
+	<td style="text-align:left;">postcode</td>
+	<td style="text-align:left;">cvb:PostCode</td>
+	<td style="text-align:left;">locn:postCode</td>
+</tr>
+<tr>
+	<td style="text-align:left;">straatnaam</td>
+	<td style="text-align:left;">cvb:Thoroughfare</td>
+	<td style="text-align:left;">locn:thoroughfare</td>
+</tr>
+<tr>
+	<td style="text-align:left;">huisnummer</td>
+	<td style="text-align:left;">cvb:LocatorDesignator</td>
+	<td style="text-align:left;">oslo:locatorDesignator</td>
+</tr>
+<tr>
+	<td style="text-align:left;">locator</td>
+	<td style="text-align:left;">LocatorDesignator</td>
+	<td style="text-align:left;">oslo:locatorDesignator</td>
+</tr>
+<tr>
+	<td style="text-align:left;">provincie</td>
+	<td style="text-align:left;">cvb:AdminunitSecondline</td>
+	<td style="text-align:left;">oslo:province</td>
+</tr>
+<tr>
+	<td style="text-align:left;">deelgemeente</td>
+	<td style="text-align:left;">cvb:CvaddressArea</td>
+	<td style="text-align:left;">oslo:addressArea</td>
+</tr>
+<tr>
+	<td style="text-align:left;">postbus</td>
+	<td style="text-align:left;">cvb:PoBox</td>
+	<td style="text-align:left;">oslo:poBox</td>
+</tr>
+<tr>
+	<td style="text-align:left;">locatienaam</td>
+	<td style="text-align:left;">cvb:LocatorName</td>
+	<td style="text-align:left;">oslo:locatorName</td>
+</tr>
+<tr>
+	<td style="text-align:left;">volledig adres</td>
+	<td style="text-align:left;">cvb:FullCvaddress</td>
+	<td style="text-align:left;">oslo:fullAddress</td>
+</tr>
+</tbody>
+</table>
+
+<p>Het basisadres is uitgebreid met nog twee extra eigenschappen.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">uitgebreid</td>
+	<td style="text-align:left;">ovc:extendedAddress</td>
+	<td style="text-align:left;">oslo:extended_address</td>
+</tr>
+<tr>
+	<td style="text-align:left;">adres</td>
+	<td style="text-align:left;">(OsloAddressType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">bakent</td>
+	<td style="text-align:left;">ovc:adminUnit</td>
+	<td style="text-align:left;">oslo:adminUnit</td>
+</tr>
+<tr>
+	<td style="text-align:left;">administratief af</td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+
+<h1 id="dienstverlening">Dienstverlening</h1>
+<section>
+
+<h2 id="dienstverlening">Dienstverlening</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Streefdatum</td>
+	<td style="text-align:left;">ovc:targetDate</td>
+	<td style="text-align:left;">oslo:targetDate</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">type</td>
+	<td style="text-align:left;">dcterms:type</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Vereist</td>
+	<td style="text-align:left;">hasInput</td>
+	<td style="text-align:left;">cpsv:hasInput</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvDocumentType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Levert</td>
+	<td style="text-align:left;">produces</td>
+	<td style="text-align:left;">cpsv:produces</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvProductType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Bevindt zich</td>
+	<td style="text-align:left;">status</td>
+	<td style="text-align:left;">oslo:status</td>
+</tr>
+<tr>
+	<td style="text-align:left;">in</td>
+	<td style="text-align:left;">(OvStatusType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Resulteert in</td>
+	<td style="text-align:left;">result</td>
+	<td style="text-align:left;">oslo:result</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Volgt</td>
+	<td style="text-align:left;">ovc:Rule</td>
+	<td style="text-align:left;">cpsv:follows</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Voorziet</td>
+	<td style="text-align:left;">ova:Role</td>
+	<td style="text-align:left;">oslo:hasRole</td>
+</tr>
+<tr>
+	<td style="text-align:left;">behoort tot</td>
+	<td style="text-align:left;">requires</td>
+	<td style="text-align:left;">dcterms:requires</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvPublicServiceType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="rol">Rol</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">roleType</td>
+	<td style="text-align:left;">dcterms:type</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">bestaat uit</td>
+	<td style="text-align:left;">permission</td>
+	<td style="text-align:left;">oslo:hasPermission</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvPermissionType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">vervult</td>
+	<td style="text-align:left;">agent</td>
+	<td style="text-align:left;">oslo:hasActor</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(ovc:OvagentType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="machtiging">Machtiging</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">geldigheidsperiode</td>
+	<td style="text-align:left;">ovc:validityPeriod</td>
+	<td style="text-align:left;">oslo:validityPeriod</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="status">Status</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">statusType</td>
+	<td style="text-align:left;">oslo:statusType</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Heeft statuscode</td>
+	<td style="text-align:left;">statusCode</td>
+	<td style="text-align:left;">oslo:statusCode</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Toelichting</td>
+	<td style="text-align:left;">description</td>
+	<td style="text-align:left;">dcterms:description</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Wijzigingsdatum</td>
+	<td style="text-align:left;">modificationDate</td>
+	<td style="text-align:left;">dcterms:modified</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="initatie">Initatie</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Naam</td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">dcterms:title</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Inhoud</td>
+	<td style="text-align:left;">content</td>
+	<td style="text-align:left;">dcterms:description</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvContentsType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Lokaliseert</td>
+	<td style="text-align:left;">location</td>
+	<td style="text-align:left;">dcterms:spatial</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(locn:CvlocationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="product">Product</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Conceptueel</th>
+	<th style="text-align:left;">XML Schema</th>
+	<th style="text-align:left;">RDF</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">productType</td>
+	<td style="text-align:left;">oslo:productType</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvcodeType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Naam</td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">dcterms:title</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Inhoud</td>
+	<td style="text-align:left;">content</td>
+	<td style="text-align:left;">dcterms:description</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">(OvContentsType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geldigheidsperiode</td>
+	<td style="text-align:left;">ovc:validityPeriod</td>
+	<td style="text-align:left;">oslo:validityPeriod</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Heeft</td>
+	<td style="text-align:left;">coverage</td>
+	<td style="text-align:left;">dcterms:coverage</td>
+</tr>
+<tr>
+	<td style="text-align:left;">toepassingsgebied</td>
+	<td style="text-align:left;">(locn:CvlocationType)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+
+<h1 id="gedeeldecatalogus">Gedeelde Catalogus</h1>
+<section>
+
+<h2 id="klassen">Klassen</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Domeinmodel</th>
+	<th style="text-align:left;">RDF class</th>
+	<th style="text-align:left;">XML class</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Kanaal</td>
+	<td style="text-align:left;">oslo:Channel</td>
+	<td style="text-align:left;">TBD</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Bezigheid</td>
+	<td style="text-align:left;">oslo:Activity</td>
+	<td style="text-align:left;">TBD</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Beleidsthema</td>
+	<td style="text-align:left;">oslo:PolicyTheme</td>
+	<td style="text-align:left;">TBD</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Product</td>
+	<td style="text-align:left;">oslo:Product</td>
+	<td style="text-align:left;">TBD</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Openingsuren</td>
+	<td style="text-align:left;">TBD</td>
+	<td style="text-align:left;">TBD</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="eigenschappen">Eigenschappen</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Entiteit</th>
+	<th style="text-align:left;">Relatie</th>
+	<th style="text-align:left;">Object</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Bezigheid</strong></td>
+	<td style="text-align:left;">RDF relation</td>
+	<td style="text-align:left;">RDF object</td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">adms:identifier</td>
+	<td style="text-align:left;">adms:Identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">roltype</td>
+	<td style="text-align:left;">oslo:roleType</td>
+	<td style="text-align:left;">oslo:Code</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Beleidsveld</strong></td>
+	<td style="text-align:left;">RDF relation</td>
+	<td style="text-align:left;">RDF object</td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">adms:identifier</td>
+	<td style="text-align:left;">adms:Identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">type</td>
+	<td style="text-align:left;">dcterms:type</td>
+	<td style="text-align:left;">oslo:Code</td>
+</tr>
+<tr>
+	<td style="text-align:left;">omschrijving</td>
+	<td style="text-align:left;">dcterms:description</td>
+	<td style="text-align:left;">literal</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Product</strong></td>
+	<td style="text-align:left;">RDF relation</td>
+	<td style="text-align:left;">RDF object</td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">adms:identifier</td>
+	<td style="text-align:left;">adms:Identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">behoort tot</td>
+	<td style="text-align:left;">oslo:belongsTo</td>
+	<td style="text-align:left;">oslo:PolicyTheme</td>
+</tr>
+<tr>
+	<td style="text-align:left;">toepassingsgebied</td>
+	<td style="text-align:left;">oslo:scope</td>
+	<td style="text-align:left;">dcterms:Location</td>
+</tr>
+<tr>
+	<td style="text-align:left;">gerelateerd aan</td>
+	<td style="text-align:left;">oslo:relatesTo</td>
+	<td style="text-align:left;">oslo:Activity</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Kanaal</strong></td>
+	<td style="text-align:left;">RDF relation</td>
+	<td style="text-align:left;">RDF object</td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">adms:identifier</td>
+	<td style="text-align:left;">adms:Identifier</td>
+</tr>
+<tr>
+	<td style="text-align:left;">geeft toegang tot</td>
+	<td style="text-align:left;">oslo:providesAccesTo</td>
+	<td style="text-align:left;">oslo:Product</td>
+</tr>
+<tr>
+	<td style="text-align:left;">availableAt</td>
+	<td style="text-align:left;">oslo:availableAt</td>
+	<td style="text-align:left;">dcterms:Location</td>
+</tr>
+<tr>
+	<td style="text-align:left;">te bereiken op</td>
+	<td style="text-align:left;">oslo:contact</td>
+	<td style="text-align:left;">oslo:Contact</td>
+</tr>
+<tr>
+	<td style="text-align:left;">type</td>
+	<td style="text-align:left;">dcterms:type</td>
+	<td style="text-align:left;">oslo:Code</td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeft beschikbaarheid</td>
+	<td style="text-align:left;">TBD</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Organisatie</strong></td>
+	<td style="text-align:left;">RDF relation</td>
+	<td style="text-align:left;">RDF object</td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeftBezigheid</td>
+	<td style="text-align:left;">oslo:hasRoleInActivity</td>
+	<td style="text-align:left;">oslo:Activity</td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeftKanaal</td>
+	<td style="text-align:left;">oslo:hasChannel</td>
+	<td style="text-align:left;">oslo:Channel</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Person</strong></td>
+	<td style="text-align:left;">RDF relation</td>
+	<td style="text-align:left;">RDF object</td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeftBezigheid</td>
+	<td style="text-align:left;">oslo:hasRoleInActivity</td>
+	<td style="text-align:left;">oslo:Activity</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+
+<h1 id="tools">Tools</h1>
+<section>
+
+<h2 id="owndomainmodeltooslomodel">Own Domain Model to OSLO Model</h2>
+
+<p>TODO: Explain helper Table</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">OSLO</th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;">Eigen Model</th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Entiteiten</td>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">Codelijsten (dictionaries)</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;">productType</td>
+	<td style="text-align:left;">IPDC</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;">rolType</td>
+	<td style="text-align:left;">?</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Product</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;">functieType</td>
+	<td style="text-align:left;">?</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Kanaal</td>
+	<td style="text-align:left;">Gedeelde Catalogus Entiteit</td>
+	<td style="text-align:left;">beleidsveld</td>
+	<td style="text-align:left;">BBC</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Beleidsveld</td>
+	<td style="text-align:left;">OSLO Code (BBC)</td>
+	<td style="text-align:left;">kanaalType</td>
+	<td style="text-align:left;">?</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Bezigheid</td>
+	<td style="text-align:left;">Gedeelde Catalogus Entiteit</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Persoon</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Organisatierelatie</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Hoedanigheid</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Contactinformatie</td>
+	<td style="text-align:left;">VCARD</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Locatie</td>
+	<td style="text-align:left;">OSLO Entiteit</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Mappings</th>
+	<th style="text-align:left;">Type</th>
+	<th style="text-align:left;">Opmerking</th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;">Aanwezig?</th>
+	<th style="text-align:left;">Waar te vinden?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Identificatie</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">bron</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">versie</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">wijzigingsdatum</td>
+	<td style="text-align:left;">Datum</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Code</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">label</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">omschrijving</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">bron</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">versie</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Product</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">naam</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">inhoud</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">geldigheid</td>
+	<td style="text-align:left;">Tijdsperiode</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">type</td>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">heeftKanaal</td>
+	<td style="text-align:left;">Kanaal</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Kanaal</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">locatie</td>
+	<td style="text-align:left;">Locatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">contactinformatie</td>
+	<td style="text-align:left;">Contactinformatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">geeftToegangTot</td>
+	<td style="text-align:left;">Product</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">type</td>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Persoon</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">naam</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">voornaam</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">andere voornamen</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">adellijke titel</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">geslacht</td>
+	<td style="text-align:left;">Tekst (Lijst)</td>
+	<td style="text-align:left;">ISO/IEC 5218</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geboortedatum</td>
+	<td style="text-align:left;">Datum/tijd</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Nationaliteit</td>
+	<td style="text-align:left;">Tekst (Lijst)</td>
+	<td style="text-align:left;">via ISO&#8211;3166&#8211;1 Alpha&#8211;3 of NIS</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Datum overlijden</td>
+	<td style="text-align:left;">Datum/tijd</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Burgerlijke staat</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;">Rijksregister</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geboorteplaats</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;">NIS</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Plaats van overlijden</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;">NIS</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Wettelijk Samenwonend</td>
+	<td style="text-align:left;">Bool</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">contactinformatie</td>
+	<td style="text-align:left;">Contactinformatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Organisatie</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Maatschappelijke naam</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Commerciële naam</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Afgekorte naam</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Vestiging</td>
+	<td style="text-align:left;">Bool</td>
+	<td style="text-align:left;">0 = Onderneming, 1 = Vestiging</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Oprichtingsdatum</td>
+	<td style="text-align:left;">Datum/tijd</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Organisatierelatie</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">behoort tot</td>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">groepeert</td>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hoedanigheid</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">functietype</td>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">functieomschrijving</td>
+	<td style="text-align:left;">Tekst</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Persoon</td>
+	<td style="text-align:left;">Persoon</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Contactinformatie</td>
+	<td style="text-align:left;">Contactinformatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Bezigheid</strong></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">id</td>
+	<td style="text-align:left;">Identificatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">rolType</td>
+	<td style="text-align:left;">Code</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">persoon</td>
+	<td style="text-align:left;">Persoon</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;">Organisatie</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+
+<h2 id="oslomodeltooslordforosloxml">OSLO Model to OSLO RDF or OSLO XML</h2>
+</section>
+<section>
+
+<h2 id="osloxmltordf">OSLO XML to RDF</h2>
+
+<p>TODO: Describe (RML mapping file + script?)</p>
+</section>
+<section>
+
+<h2 id="oslordf">OSLO RDF</h2>
+
+<p>TODO: Describe (RML mapping file + script?)</p>
+</section>
+</section>
+<section class='appendix'>
+
+<h1 id="acknowledgements">Acknowledgements</h1>
+
+<p>Speciale dank aan &#8230;</p>
+</section>
+<!--- Info about the scripts below: http://www.w3.org/respec/ref.html -->
+<script src='respec-w3c-common.js'
+        async class='remove'>
+</script>
+<script class='remove'>
+  var respecConfig = {
+      // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
+      specStatus:           "unofficial",
+      
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "oslo-service-spec",
+      
+      // licensing
+      additionalCopyrightHolders: "OSLO",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      publishDate:  "2014-04-24",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      copyrightStart: "2013",
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Laurens De Vocht"
+          ,   mailto:     "laurens.devocht@ugent.be"
+          ,   company:    "Ghent University - iMinds"
+          ,   companyURL: "http://iminds.be"
+          },
+      ],
+      
+      // name of the WG
+      // wg:           "OSLO Werkgroep",
+      
+      // URI of the public WG page
+      // wgURI:        "http://example.org/really-cool-wg",
+      
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      // wgPublicList: "spec-writers-anonymous",
+      
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      // wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+  };
+</script>
+
+</body>
+</html>

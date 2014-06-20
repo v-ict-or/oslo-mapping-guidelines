@@ -1,0 +1,9 @@
+BUILD
+
+multimarkdown template.txt --process-html -o template.html
+
+for oslo
+
+multimarkdown oslo-service-spec-draft.txt --process-html -o oslo-service-spec.html
+
+multimarkdown oslo-mapping-spec-draft.txt --process-html -o oslo-mapping-spec.html
