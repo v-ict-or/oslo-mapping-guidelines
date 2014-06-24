@@ -117,16 +117,14 @@ De namespace of the OSLO vocabulary is:
 Aan de basis ligt een Identificatie klasse, die is gebaseerd op de gelijknamige UN/CEFACT klasse [UN/CEFACT] en is gedefinieerd in de ADMS namespace [ADMS]. In de de OSLO XML specificatie worden componenten uit de Core Vocabularies XML hergebruikt. Het idee hierachter is dat de OSLO XML specificatie zo maximaal gealigneerd is op de Core Vocabularies XML. Aan de basis van de Core Vocabularies XML is een bibliotheek van veelgebruikte informatie elementen die voorzien is door de “Universal Bussiness Language” bibliotheek (UBL) [OASIS]. Met dit design zorgt de Core Vocabularies voor optimale herbruikbaarheid van elementen gedefinieerd door de “Core Component Technical Specification” [CCTS] van UN/CEFACT (de basis van UBL).
 Voor de contactinformatie te modelleren wordt gebruik gemaakt van VCard componenten zoals gespecifieerd in [RFC6350] door het IETF. Uit de beschikbare componenten werd een subset geselecteerd die gealinieerd is met het OSLO Conceptueel model.
 
-|   Namespace                                                                   |:  Prefix:|         Beheer:|   Domein                    |
+|   Namespace                                                                   |  Prefix  |         Beheer:|   Domein                    |
 |-------------------------------------------------------------------------------|----------|----------------|-----------------------------|
 |   urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2 |     udt  |   [UN/CEFACT](http://www.unece.org/cefact.html) |   Datatypes                 |
-|   http://www.w3.org/ns/corevocabulary/                                        |     cvb  |         [ISA](http://joinup.ec.europa.eu/asset/core_business/asset_release/core-business-vocabulary-100) |   Basis componenten         |
-|   BasicComponents                                                             |          |                |                             |
-|   http://www.w3.org/ns/corevocabulary                                         |     cva  |            ISA |   Geaggregeerde componenten |
-|   /AggregateComponents                                                        |          |                |                             |
+|   http://www.w3.org/ns/corevocabulary/BasicComponents                         |     cvb  |         [ISA](http://joinup.ec.europa.eu/asset/core_business/asset_release/core-business-vocabulary-100) |   Basis componenten         |         
+|   http://www.w3.org/ns/corevocabulary/AggregateComponents                     |     cva  |            ISA |   Geaggregeerde componenten |
 |   urn:oslo:names:specification:schema:xsd:CommonBasicComponents-1             |   ovc    |   OSLO         |   OSLO Basis componenten    |
-|   urn:oslo:names:specification:schema:xsd:AggregateComponents-1               |   ova    |   OSLO         |   OSLO Geaggregeerde        |
-|                                                                               |          |                |   componenten               |
+|   urn:oslo:names:specification:schema:xsd:AggregateComponents-1               |   ova    |   OSLO         |   OSLO Geaggregeerde componenten |
+
 
 - [OASIS](http://docs.oasis-open.org/ubl/UBL-2.1.pdf) Universal Business Language v2.1.
 - [CCTS](http://www.unece.org/fileadmin/DAM/cefact/codesfortrade/CCTS/CCTS-Version3.pdf) United Nations Centre for Trade Facilitation and Electronic Business. Core Components Technical Specification Version 3.0
@@ -142,7 +140,7 @@ Voor de contactinformatie te modelleren wordt gebruik gemaakt van VCard componen
 
 Het RDF schema maak optimaal gebruik van bestaande schema’s en vocabularies. Dit is belangrijk zodat toepassingen en andere afgeleide schema’s zo makkelijk gelinkt kunnen worden aan het OSLO RDF-schema zonder dat daarvoor eerst complexe mappings gemaakt moeten worden tussen vocabularies voor courant gebruikte object, types en kenmerken in de beschrijving van de uitgewisselde gegevens. Bovendien garandeert hergebruik van bestaande schema’s compatibiliteit en herkenbaarheid op langere termijn van het OSLO RDF-schema. Een bijkomend voordeel is dat de set eigen definities in het OSLO RDF-schema beperkt blijft zodat deze makkelijk te ondersteunen blijft.
 
-|   Namespace                       |:   Prefix:|          Beheer:|   Domein                   |
+|   Namespace                       |   Prefix  |          Beheer:|   Domein                   |
 |-----------------------------------|-----------|-----------------|----------------------------|
 |   http://www.w3.org/ns/org        |     org   |      [W3C GLD](http://www.w3.org/2011/gld/wiki/Main_Page) |   Organisaties             |
 |   http://www.w3.org/ns/regorg     |     rov   |         W3C GLD |   Geregistreerde           |
@@ -151,7 +149,7 @@ Het RDF schema maak optimaal gebruik van bestaande schema’s en vocabularies. D
 |   http://www.w3.org/ns/locn       |   locn    |   ISA(http://joinup.ec.europa.eu/asset/core_location/home)        |   Locaties                 |
 |   http://purl.org/vocab/cpsv      |   cpsv    |   [ISA](http://joinup.ec.europa.eu/asset/core_public_service/home)       |   Publieke dienstverlening |
 |   http://purl.org/dc/terms/       |   dcterms |   [DCMA](http://dublincore.org/about/organization/)       |   Metadata                 |
-|   http://schema.org/              |   schema  |   ]schema.org](http://schema.org/docs/schemas.html) |   Markup, Metadata         |
+|   http://schema.org/              |   schema  |   [schema.org](http://schema.org/docs/schemas.html) |   Markup, Metadata         |
 |   http://www.w3.org/2006/vcard/ns |   vcard   |   W3C           |   Contactgegevens          |
 |   http://www.w3.org/ns/adms       |   adms    |   [WRC GLD](https://dvcs.w3.org/hg/gld/raw-file/default/adms/index.html)    |   Standaarden, Codelijsten |
 |                                   |           |                 |   en Taxonomien            |
@@ -366,8 +364,8 @@ TODO: Opsplitsen Rang
 |   Afgekorte naam    |   cvb:AlternativeName             |   dcterms:alternative    |
 |   Type              |   ovc:companyTypeOvbusinessCode   |   rov:orgType            |
 |                     |   (ovc:OvcodeType)                |                          |
-|   Vestiging         |   isBranch                        |   oslo:isBranch          |
-|                     |   (ovc:IndicatorType)             |                          |
+|   Vestiging         |   isBranch                        |   rdf:type org:Site      |
+|                     |   (ovc:IndicatorType)             |   org:hasSite, invers org:siteOf |
 |   Oprichtingsdatum  |   establishmentDate               |   oslo:establishmentDate |
 |                     |   (ovc:OsloDateType)              |                          |
 |   Datum             |   shutdownDate                    |   oslo:shutDownDate      |
