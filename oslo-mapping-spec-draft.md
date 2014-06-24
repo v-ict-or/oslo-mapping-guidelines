@@ -373,7 +373,7 @@ TODO: Opsplitsen Rang
 |   KBO soort         |   kind                            |   oslo:kind              |
 |                     |   (ovc:IndicatorType)             |                          |
 |   KBO rechtsvorm    |   ovc:legalFormCode               |   oslo:legalFormCode     |
-|   KBO               |   ovc:legalStatusCode             |   rov:companyStatus      |
+|   KBO               |   ovc:legalStatusCode             |   rov:orgStatus          |
 |   rechtstoestand    |   (ovc:legalStateEnumType)        |                          |
 |   KBO reden         |   reasonShutdown                  |   oslo:reasonShutDown    |
 |   stopzetting       |   (ovc:ReasonShutDownEnumType)    |                          |
@@ -381,9 +381,9 @@ TODO: Opsplitsen Rang
 |   Hoedanigheidsfase |                                   |                          |
 |   KBO               |   ovc:Function                    |   oslo:function          |
 |   Hoedanigheid      |                                   |                          |
-|   KBO Status        |   ovc:companyStatusOvbusinessCode |   oslo:companyStatus     |
+|   KBO Status        |   ovc:companyStatusOvbusinessCode |   oslo:orgStatus         |
 |                     |   (ovc:OvcodeType)                |                          |
-|   activiteit        |   companyActivityOvbusinessCode   |   rov:companyActivity    |
+|   activiteit        |   companyActivityOvbusinessCode   |   rov:orgActivity        |
 |                     |   (ovc:OvcodeType)                |                          |
 |   facturatielocatie |   invoiceLocation                 |   oslo:invoiceLocation   |
 |                     |   (OvresidenceobjectType)         |                          |
